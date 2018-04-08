@@ -13,6 +13,7 @@ class JsonToObject:
         :param keyword_str: 如果json中有python的关键字, 会自动在加上这个前缀 type: str
         :param identifier: 如果json中有不能转换成python标识符, 会自动在加上这个前缀 type: str
         """
+        
         self.__data = None
         JsonToObject.__decoding = decoding
         if isinstance(item, str):
@@ -23,6 +24,7 @@ class JsonToObject:
             self.__data = item
         else:
             raise TypeError("只接受 dict或者str、bytes类型的json, 但是传入类型为{}".format(type(item)))
+        self.__item = dict(self.__data)
         for key in dict(self.__data):
             if not key.isidentifier():
                 self.__data["{}_{}".format(identifier, key)] = self.__data[key]
@@ -30,6 +32,10 @@ class JsonToObject:
             elif keyword.iskeyword(key):
                 self.__data["{}{}".format(keyword_str, key)] = self.__data[key]
                 self.__data.pop(key)
+
+    def to_dict(self):
+        """返回未经过转义的dict"""
+        return self.__item
 
     def __repr__(self):
         if not self.__data:
